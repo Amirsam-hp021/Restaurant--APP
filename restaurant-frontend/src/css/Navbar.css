@@ -1,0 +1,55 @@
+.navbar {
+    background-color: #1c1c1c;
+    color: white;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navbar-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .navbar-logo img {
+    height: 3rem;
+    width: auto;
+    border-radius: 0.25rem;
+  }
+  
+  .navbar-logo h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #8de28f; /* 🌿 Light Green Brand Color */
+  }
+  
+  .navbar-links {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 1.125rem;
+  }
+  
+  .navbar-link {
+    color: white;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  
+  .navbar-link:hover {
+    color: #a6edaa; /* lighter green on hover */
+  }
+  
+  .navbar-link.active {
+    color: #8de28f; /* active link green highlight */
+    border-bottom: 2px solid #8de28f;
+  }
+  
