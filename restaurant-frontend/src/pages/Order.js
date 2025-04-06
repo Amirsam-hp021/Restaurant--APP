@@ -1,105 +1,70 @@
-import axios from "axios";
-import React, { useState } from "react";
+import React from "react";
+import { Link } from "react-router-dom";
+import "../css/Order.css";
+
+// Icons
+import { FaPhone, FaUtensils, FaWhatsapp } from "react-icons/fa";
 
 const Order = () => {
-  const [customerName, setCustomerName] = useState("");
-  const [items, setItems] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [message, setMessage] = useState("");
+  const whatsappNumbers = [
+    { number: "+37493300440", label: "WhatsApp 1" },
+    { number: "+37444200620", label: "WhatsApp 2" },
+  ];
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const callNumbers = [
+    { number: "+37493300440", label: "Call Now 1" },
+    { number: "+37444200620", label: "Call Now 2" },
+  ];
 
-    // Check if all fields are filled
-    if (!customerName || items.length === 0 || total === 0) {
-      setMessage("Please fill in all fields.");
-      return;
-    }
-
-    // Prepare the order data
-    const orderData = {
-      customerName,
-      items,
-      total,
-    };
-
-    try {
-      // Make the API request to submit the order
-      const response = await axios.post(
-        "http://localhost:5001/api/orders",
-        orderData
-      );
-      if (response.data.success) {
-        setMessage("Order placed successfully!");
-        // Reset the form fields
-        setCustomerName("");
-        setItems([]);
-        setTotal(0);
-      }
-    } catch (error) {
-      console.error("Error submitting order:", error);
-      setMessage("Error submitting the order. Please try again.");
-    }
+  const generateWhatsAppLink = (number) => {
+    const message = encodeURIComponent("Hi, I want to order from the menu.");
+    return `https://wa.me/${number.replace("+", "")}?text=${message}`;
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
-      <h2 className="text-2xl font-bold mb-4">Place an Order</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label
-            className="block text-sm font-medium mb-2"
-            htmlFor="customerName"
+    <div className="order-page">
+      <h1 className="order-title">Order Now</h1>
+      <p className="coming-soon-text">
+        Online ordering will be available soon!
+      </p>
+
+      {/* Menu Link */}
+      <div>
+        <Link to="/menu" className="order-button menu-button">
+          <FaUtensils style={{ marginRight: "8px" }} />
+          View Menu
+        </Link>
+      </div>
+
+      {/* WhatsApp Buttons */}
+      <div>
+        {whatsappNumbers.map((w, i) => (
+          <a
+            key={i}
+            href={generateWhatsAppLink(w.number)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="order-button whatsapp-button"
           >
-            Customer Name
-          </label>
-          <input
-            id="customerName"
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={customerName}
-            onChange={(e) => setCustomerName(e.target.value)}
-            required
-          />
-        </div>
+            <FaWhatsapp style={{ marginRight: "8px" }} />
+            {w.label}
+          </a>
+        ))}
+      </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2" htmlFor="items">
-            Items (comma separated)
-          </label>
-          <input
-            id="items"
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={items}
-            onChange={(e) => setItems(e.target.value.split(","))}
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2" htmlFor="total">
-            Total
-          </label>
-          <input
-            id="total"
-            type="number"
-            className="w-full p-2 border border-gray-300 rounded"
-            value={total}
-            onChange={(e) => setTotal(Number(e.target.value))}
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-        >
-          Submit Order
-        </button>
-      </form>
-
-      {message && <p className="mt-4 text-center text-red-500">{message}</p>}
+      {/* Call Buttons */}
+      <div>
+        {callNumbers.map((c, i) => (
+          <a
+            key={i}
+            href={`tel:${c.number}`}
+            className="order-button call-button"
+          >
+            <FaPhone style={{ marginRight: "8px" }} />
+            {c.label}
+          </a>
+        ))}
+      </div>
     </div>
   );
 };
