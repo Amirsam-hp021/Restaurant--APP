@@ -1,47 +1,104 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Card, CardContent } from "../components/ui/card";
-import "../css/MenuPage.css"; // make sure this path is correct
+import "../css/MenuPage.css";
 
-// Ensure that this is the correct backend URL for fetching menu items
-const API_URL = "/api/menuItems"; // Proxy will handle the full URL
+const API_URL = "/api/menuItems";
+
+// Emoji icon for category
+const getCategoryIcon = (category) => {
+  switch (category) {
+    case "pizza":
+      return "🍕";
+    case "sandwich":
+      return "🥪";
+    default:
+      return "🍽️";
+  }
+};
 
 export default function MenuPage() {
   const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // Fetch the menu items from the backend API when the component mounts
   useEffect(() => {
     fetchMenu();
   }, []);
 
-  // Function to fetch the menu items
   const fetchMenu = async () => {
     try {
       const res = await axios.get(API_URL);
-      setMenuItems(res.data.data); // Ensure this matches the API response structure
+      setMenuItems(res.data.data);
     } catch (error) {
       console.error("Error fetching menu:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Restaurant Menu</h1>
+  const filteredItems =
+    selectedCategory === "all"
+      ? menuItems
+      : menuItems.filter((item) => item.category === selectedCategory);
 
-      {/* Display Menu Items */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {menuItems.map((item) => (
-          <Card
-            key={item._id}
-            className="p-4 flex justify-between items-center"
+  const categories = ["all", "pizza", "sandwich"];
+
+  return (
+    <div className="menu-page">
+      <h1 className="menu-title">Our Menu</h1>
+
+      {/* Category Filter */}
+      <div className="category-buttons">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            className={`category-button ${
+              selectedCategory === cat ? "active" : ""
+            }`}
+            onClick={() => setSelectedCategory(cat)}
           >
-            <CardContent>
-              <h2 className="text-lg font-semibold">{item.name}</h2>
-              <p className="text-gray-600">${item.price}</p>
-            </CardContent>
-          </Card>
+            {cat.charAt(0).toUpperCase() + cat.slice(1)}
+          </button>
         ))}
       </div>
+
+      {/* Menu List */}
+      {loading ? (
+        <p className="loading-text">Loading menu...</p>
+      ) : filteredItems.length === 0 ? (
+        <p className="empty-text">No items found in this category.</p>
+      ) : (
+        <div className="menu-grid">
+          {filteredItems.map((item) => (
+            <div key={item._id} className="menu-card">
+              <img
+                src={
+                  item.imageUrl
+                    ? item.imageUrl
+                    : "https://via.placeholder.com/400x220?text=No+Image"
+                }
+                alt={item.name || "menu item"}
+                onError={(e) => {
+                  e.target.src =
+                    "https://via.placeholder.com/400x220?text=No+Image";
+                }}
+              />
+              <div className="menu-card-content">
+                <h3 className="menu-item-name">{item.name}</h3>
+
+                <div className="category-badge">
+                  <span className="emoji">
+                    {getCategoryIcon(item.category)}
+                  </span>
+                  <span className="label">{item.category}</span>
+                </div>
+
+                <p className="menu-item-price">{item.price} AMD</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

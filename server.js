@@ -72,3 +72,23 @@ findAvailablePort(portFromEnv, (port) => {
     console.log(`Server is running on port ${port}`);
   });
 });
+
+const itemSchema = new mongoose.Schema({
+  name: String,
+  description: String,
+  price: Number,
+  category: String,
+  imageUrl: String,
+});
+const Item = mongoose.model("Menuitems", itemSchema);
+app.post("/add", async (req, res) => {
+  try {
+    const { name, description, price, category, imageUrl } = req.body;
+    const item = new Item({ name, description, price, category, imageUrl });
+    await item.save();
+    res.json({ msg: "Item added successfully!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: "Failed to add item" });
+  }
+});

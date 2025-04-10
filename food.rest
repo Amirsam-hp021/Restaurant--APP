@@ -1,0 +1,1 @@
+POST http://localhost:5002/add?name=Pizza Roast Beef&description=(roast beef, cheese, Thymes, mushroom, Bell pepper, tomatoes) 660 GR&price=4000&category=pizza&imageUrl=https://i.postimg.cc/RhHjrTqN/7-ROAST-BEEF.jpg

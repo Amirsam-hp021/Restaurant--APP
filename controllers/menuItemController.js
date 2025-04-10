@@ -14,8 +14,8 @@ exports.getAllMenuItems = async (req, res) => {
 // Create new menu item
 exports.createMenuItem = async (req, res) => {
   try {
-    const { name, price } = req.body;
-    const newItem = new MenuItem({ name, price });
+    const { name, price, image } = req.body; // include image
+    const newItem = new MenuItem({ name, price, image });
     await newItem.save();
     res.status(201).json({ success: true, data: newItem });
   } catch (error) {
